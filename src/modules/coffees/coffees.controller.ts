@@ -1,6 +1,6 @@
-import { UpdateCoffeeDto } from './../dto/update-coffee.dto';
-import { CreateCoffeeDto } from './../dto/create-coffee.dto';
-import { CoffeesService } from '../services/coffees.service';
+import { UpdateCoffeeDto } from './dto/update-coffee.dto';
+import { CreateCoffeeDto } from './dto/create-coffee.dto';
+import { CoffeesService } from './coffees.service';
 import {
     Body,
     Controller,

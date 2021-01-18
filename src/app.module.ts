@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoffeesModule } from './modules/coffees/coffees.module';
+import { CoffeeRatingModule } from './modules/coffee-rating/coffee-rating.module';
+import { DatabaseModule } from './modules/database/database.module';
 
 @Module({
     imports: [
@@ -17,6 +19,8 @@ import { CoffeesModule } from './modules/coffees/coffees.module';
             synchronize: process.env.NODE_ENV === 'production' ? false : true, // Note: Don't use on Prod
         }),
         CoffeesModule,
+        CoffeeRatingModule,
+        DatabaseModule,
     ],
     controllers: [AppController],
     providers: [AppService],
