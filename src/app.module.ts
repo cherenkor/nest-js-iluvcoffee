@@ -14,7 +14,7 @@ import { CoffeesModule } from './modules/coffees/coffees.module';
             password: 'pass123',
             database: 'postgres',
             autoLoadEntities: true,
-            synchronize: true, // Note: Don't use on Prod
+            synchronize: process.env.NODE_ENV === 'production' ? false : true, // Note: Don't use on Prod
         }),
         CoffeesModule,
     ],
