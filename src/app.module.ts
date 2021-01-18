@@ -6,10 +6,19 @@ import { CoffeesModule } from './modules/coffees/coffees.module';
 import { CoffeeRatingModule } from './modules/coffee-rating/coffee-rating.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import * as Joi from '@hapi/joi';
 
 @Module({
     imports: [
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            validationSchema: Joi.object({
+                DATABASE_NAME: Joi.required(),
+                DATABASE_HOST: Joi.required(),
+                DATABASE_PORT: Joi.number().required(),
+                DATABASE_USERNAME: Joi.required(),
+                DATABASE_PASSWORD: Joi.required(),
+            }),
+        }),
         TypeOrmModule.forRoot({
             type: 'postgres',
             database: process.env.DATABASE_NAME,
