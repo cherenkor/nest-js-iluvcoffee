@@ -1,10 +1,11 @@
+import { Event } from './../../../events/entities/event.entity';
 import { DEFAULT_MAX_PAGINATION } from './../../../constants/limits';
 import { Flavor } from './../entities/flavor.entity';
 import { CreateCoffeeDto } from './../dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './../dto/update-coffee.dto';
 import { Coffee } from '../entities/coffee.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
@@ -15,6 +16,7 @@ export class CoffeesService {
         private readonly coffeeRepository: Repository<Coffee>,
         @InjectRepository(Flavor)
         private readonly flavorRepository: Repository<Flavor>,
+        private readonly connection: Connection,
     ) {}
 
     findAll({ limit, offset }: PaginationQueryDto): Promise<Coffee[]> {
@@ -78,6 +80,31 @@ export class CoffeesService {
     async remove(id: string): Promise<Coffee> {
         const coffee = await this.findOne(id);
         return this.coffeeRepository.remove(coffee);
+    }
+
+    async recommendCoffee(coffee: Coffee): Promise<void> {
+        const queryRunner = this.connection.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            coffee.recommendations++;
+
+            const recommendEvent = new Event();
+            recommendEvent.name = 'recommend_coffee';
+            recommendEvent.type = 'coffee';
+            recommendEvent.payload = { coffee: coffee.id };
+
+            await queryRunner.manager.save(recommendEvent);
+            await queryRunner.manager.save(coffee);
+
+            await queryRunner.commitTransaction();
+        } catch (ex) {
+            await queryRunner.rollbackTransaction();
+        } finally {
+            await queryRunner.release();
+        }
     }
 
     private async preloadFlavorByName(name: string): Promise<Flavor> {
