@@ -1,3 +1,4 @@
+import { ApiKeyGuard } from './common/guards/api-key.guard';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
