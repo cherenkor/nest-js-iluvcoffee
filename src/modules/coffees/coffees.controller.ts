@@ -1,4 +1,3 @@
-import { ParseIntPipe } from './../../common/pipes/parse-int.pipe';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { CoffeesService } from './coffees.service';
