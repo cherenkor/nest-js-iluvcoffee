@@ -1,5 +1,6 @@
+import { LoggingMiddleware } from './middleware/logging.middleware';
 import { ApiKeyGuard } from './guards/api-key.guard';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 
@@ -12,4 +13,8 @@ import { ConfigModule } from '@nestjs/config';
         },
     ],
 })
-export class CommonModule {}
+export class CommonModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(LoggingMiddleware).exclude().forRoutes('*');
+    }
+}

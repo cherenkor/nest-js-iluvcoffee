@@ -1,3 +1,4 @@
+import { ParseIntPipe } from './../../common/pipes/parse-int.pipe';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { CoffeesService } from './coffees.service';
@@ -27,7 +28,7 @@ export class CoffeesController {
     @Get(':id')
     @Public()
     findOne(@Param('id') id: string) {
-        return this.coffeesService.findOne(id);
+        return this.coffeesService.findOne('' + id);
     }
 
     @Post()
