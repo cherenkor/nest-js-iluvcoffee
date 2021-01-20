@@ -1,11 +1,21 @@
-import { CoffeesModule } from './../../src/modules/coffees/coffees.module';
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
+import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HttpExceptionFilter } from '../../src/common/filters/http-exception.filter';
+import { TimeoutInterceptor } from '../../src/common/interceptors/timeout.interceptor';
+import { CreateCoffeeDto } from '../../src/modules/coffees/dto/create-coffee.dto';
+import { WrapResponseInterceptor } from '../../src/common/interceptors/wrap-response.interceptor';
+import { CoffeesModule } from '../../src/modules/coffees/coffees.module';
 
 describe('[Feature] Coffees - /coffees', () => {
     let app: INestApplication;
+    const coffee = {
+        name: 'Coffee #1',
+        description: 'Good coffee',
+        brand: 'Nest',
+        flavors: ['chocolate', 'milk'],
+    };
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -27,10 +37,41 @@ describe('[Feature] Coffees - /coffees', () => {
         }).compile();
 
         app = moduleFixture.createNestApplication();
+        app.useGlobalPipes(
+            new ValidationPipe({
+                whitelist: true,
+                transform: true,
+                forbidNonWhitelisted: true,
+                transformOptions: {
+                    enableImplicitConversion: true,
+                },
+            }),
+        );
+        app.useGlobalInterceptors(
+            new WrapResponseInterceptor(),
+            new TimeoutInterceptor(),
+        );
+        app.useGlobalFilters(new HttpExceptionFilter());
         await app.init();
     });
 
-    it.todo('Create [POST /]');
+    it('Create [POST /]', () =>
+        request(app.getHttpServer())
+            .post('/coffees')
+            .send(coffee as CreateCoffeeDto)
+            .expect(HttpStatus.CREATED)
+            .then(({ body }) => {
+                const expectedCoffee = jasmine.objectContaining({
+                    ...coffee,
+                    recommendations: 0,
+                    flavors: jasmine.arrayContaining(
+                        coffee.flavors.map((name) =>
+                            jasmine.objectContaining({ name }),
+                        ),
+                    ),
+                });
+                expect(body).toEqual({ data: expectedCoffee });
+            }));
     it.todo('Get all [GET /]');
     it.todo('Get one [GET /:id]');
     it.todo('Update one [PATCH /:id');
