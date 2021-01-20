@@ -11,8 +11,8 @@ import {
     Post,
     Query,
 } from '@nestjs/common';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
-import { Public } from 'src/common/decorators/public.decorator';
+import { PaginationQueryDto } from './../../common/dto/pagination-query.dto';
+import { Public } from './../../common/decorators/public.decorator';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Coffees')

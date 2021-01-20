@@ -6,7 +6,7 @@ import { Coffee } from './entities/coffee.entity';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { ConfigType } from '@nestjs/config';
 import coffeesConfig from './config/coffees.config';
 
