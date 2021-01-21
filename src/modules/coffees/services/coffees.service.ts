@@ -5,14 +5,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class CoffeesService {
-    private coffees: Coffee[] = [
-        {
-            id: '1',
-            name: 'Shipwrek Roast',
-            brand: 'Buddy Brew',
-            flavors: ['chocolatte', 'vanilla'],
-        },
-    ];
+    private coffees: Coffee[] = [];
 
     findAll(): Coffee[] {
         return this.coffees;
